@@ -1,0 +1,15 @@
+{
+
+    "require": {
+        "tg-bot-api/bot-api-base": "^1.7",
+        "php-http/guzzle6-adapter": "^2.0",
+        "http-interop/http-factory-guzzle": "^1.0",
+        "fabpot/goutte": "^4.0",
+        "html2text/html2text": "^4.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Classes\\" : "classes/"
+        }
+    }
+}

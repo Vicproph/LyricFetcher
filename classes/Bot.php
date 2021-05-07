@@ -13,10 +13,10 @@ use Symfony\Component\HttpClient\HttpClient;
 
 class Bot
 {
-    const BOT_KEY = '<YOUR BOT KEY>';
+    const BOT_KEY = '1706812403:AAFrmuFtocFvf05EbF04-EByQOOtMjRdGOo';
     const START_PHASE = 1;
     const SEARCH_PHASE = 2;
-    const PROXY = '<YOUR PROXY>'; // Won't be needed if there's no block on any of the APIs needed
+    const PROXY = '';//'51.81.82.175:80'; // Won't be needed if there's no block on any of the APIs needed
 
     public function getUpdates($offset = null) // returns an array of Updates if there exists any, null on none.
     {
