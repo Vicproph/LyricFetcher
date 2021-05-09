@@ -9,8 +9,7 @@ use Classes\Util;
 use Classes\Genius;
 
 $input = file_get_contents('php://input');
-var_dump($input);
-
-//$bot = new Bot();
-
+//var_dump($input);
+$bot = new Bot();
+$bot->sendMessage($input,1600394220);
 //$bot->processQueries();
