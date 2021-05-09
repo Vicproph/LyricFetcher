@@ -8,6 +8,9 @@ use Classes\Bot;
 use Classes\Util;
 use Classes\Genius;
 
-$bot = new Bot();
+$input = file_get_contents('php://input');
+var_dump($input);
 
-$bot->processQueries();
+//$bot = new Bot();
+
+//$bot->processQueries();
