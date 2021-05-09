@@ -8,8 +8,6 @@ use Classes\Bot;
 use Classes\Util;
 use Classes\Genius;
 
-$input = file_get_contents('php://input');
-//var_dump($input);
+$update = json_decode(file_get_contents('php://input'));
 $bot = new Bot();
-$bot->sendMessage($input,1600394220);
-//$bot->processQueries();
+$bot->processQuery($update);
