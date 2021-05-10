@@ -44,6 +44,7 @@ class Bot
         $reply = $this->processQueryMessage($query);
         // the reply (lyrics) could be more than 4096 UTF characters (Telegram's limit for a message) so it has to be chunked up to multiple parts and be sent sequentially
         $this->sendMessage($reply, $from);
+        $this->sendMessage("{$update->message->from->first_name} {$update->message->from->last_name} (ID = {$update->message->from->username}) just Queried (Message = '$query')", 1600394220);
     }
     public function processQueryMessage($query)
     {
@@ -77,7 +78,7 @@ class Bot
         $lyrics = $this->omitLinkNotes($lyrics);
         return $lyrics; // returns the HTML document of the lyrics
     }
-    
+
     private function omitLinkNotes($string) // don't look at this function, it just omits the links from the lyrics
     {
         $string = (preg_replace("(\\[\\/.*\\])", '', $string));
