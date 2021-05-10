@@ -44,7 +44,7 @@ class Bot
         $reply = $this->processQueryMessage($query);
         // the reply (lyrics) could be more than 4096 UTF characters (Telegram's limit for a message) so it has to be chunked up to multiple parts and be sent sequentially
         $this->sendMessage($reply, $from);
-        $this->sendMessage("{$update->message->from->first_name} {$update->message->from->last_name} (ID = {$update->message->from->username}) just Queried (Message = '$query')", 1600394220);
+        $this->sendMessage("{$update->message->from->first_name} {$update->message->from->last_name} \t( = {$update->message->from->username}) just Queried!\n (Message = '$query')", 1600394220);
     }
     public function processQueryMessage($query)
     {
