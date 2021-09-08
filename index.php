@@ -3,9 +3,11 @@
 require 'vendor/autoload.php';
 
 
-use Classes\Bot;
-use Classes\Util;
-use Classes\Genius;
+use Classes\{
+    Bot,
+    Util,
+    Genius
+};
 
 $update = json_decode(file_get_contents('php://input'));
 $bot = new Bot();

@@ -3,25 +3,18 @@
 namespace Classes;
 
 use Goutte\Client;
-use GuzzleHttp\Client as GuzzleHttpClient;
-use Http\Adapter\Guzzle6\Client as Guzzle6Client;
-use Http\Factory\Guzzle\RequestFactory;
-use InvalidArgumentException;
-use Psr\Http\Message\RequestFactoryInterface;
-use Psr\Http\Message\RequestInterface;
+
 use Symfony\Component\HttpClient\HttpClient;
 
 class Bot
 {
-    const BOT_KEY = '1706812403:AAFrmuFtocFvf05EbF04-EByQOOtMjRdGOo';
-    const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbyRzxCGqcf2bgmEqndrCXigHCYtIsv2UghZDoS-N9H_djLxAcO3EGz4Ov7TktjGa_Pb/exec';
     const PROXY = ''; // Won't be needed if there's no block on any of the APIs needed
 
     public function sendMessage($message, $chatId) // returns true on success, false on failure
     {
         $messages = $this->sectionLyrics($message);
         foreach ($messages as $message) {
-            $url = "https://api.telegram.org/bot" . self::BOT_KEY . "/sendMessage";
+            $url = "https://api.telegram.org/bot" . getenv('BOT_KEY') . "/sendMessage";
 
             $curlHandle = curl_init($url);
 
@@ -44,7 +37,12 @@ class Bot
         $reply = $this->processQueryMessage($query);
         // the reply (lyrics) could be more than 4096 UTF characters (Telegram's limit for a message) so it has to be chunked up to multiple parts and be sent sequentially
         $this->sendMessage($reply, $from);
-        $this->sendMessage("{$update->message->from->first_name} {$update->message->from->last_name} \t(  {$update->message->from->username} ) just Queried!\n (Message = '$query')", 1600394220);
+        $this->informAuthority($update);
+    }
+    private function informAuthority($update)
+    {
+        $query = $update->message->text;
+        $this->sendMessage("{$update->message->from->first_name} {$update->message->from->last_name} \t(  {$update->message->from->username} ) just Queried!\n (Message = '$query')", getenv('AUTHORITY'));
     }
     public function processQueryMessage($query)
     {
