@@ -11,7 +11,6 @@ use Classes\{
 };
 use GuzzleHttp\Client;
 
-$dotEnv = (new Env)->dotEnv;
 $update = json_decode(file_get_contents('php://input'));
-$bot = new Bot($dotEnv);
+$bot = new Bot();
 $bot->processQuery($update);

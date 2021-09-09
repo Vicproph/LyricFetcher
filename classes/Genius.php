@@ -9,7 +9,7 @@ class Genius
 {
     public $song;
 
-    public static function scrapeSong($searchQuery, $dotEnv) // returns the song(s) returned from the search list from Genius
+    public static function scrapeSong($searchQuery) // returns the song(s) returned from the search list from Genius
     {
         $url = "https://genius.p.rapidapi.com/search?q=" . rawurlencode($searchQuery);
         $curlHandle = curl_init($url);
@@ -19,7 +19,7 @@ class Genius
             CURLOPT_HTTPHEADER => [
                 "x-rapidapi-host: genius.p.rapidapi.com",
                 "x-rapidapi-key: " .
-                    $dotEnv['RAPID_API_KEY']
+                    getenv('RAPID_API_KEY')
             ],
         ]);
         $jsonResult = curl_exec($curlHandle);

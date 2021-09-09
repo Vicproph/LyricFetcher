@@ -11,18 +11,14 @@ use Dotenv\Dotenv;
 
 class Bot
 {
-    public $dotEnv;
     const PROXY = '127.0.0.1:61933'; // Won't be needed if there's no block on any of the APIs needed
 
-    public function __construct($dotEnv)
-    {
-        $this->dotEnv = $dotEnv;
-    }
+
     public function sendMessage($message, $chatId) // returns true on success, false on failure
     {
         $messages = $this->sectionLyrics($message);
         foreach ($messages as $message) {
-            $url = "https://api.telegram.org/bot" . $this->dotEnv['BOT_KEY'] . "/sendMessage?text=$message&chat_id=$chatId";
+            $url = "https://api.telegram.org/bot" . getenv('BOT_KEY') . "/sendMessage?text=$message&chat_id=$chatId";
             $client = new Client();
             echo "message : " . $message . "\n";
             $response = $client->get($url, [
@@ -50,7 +46,7 @@ class Bot
     private function informAuthority($update)
     {
         $query = $update->message->text;
-        $this->sendMessage($query = "{$update->message->from->first_name} {$update->message->from->last_name} \t(  @{$update->message->from->username} ) just Queried!\n (Query = '$query')", $this->dotEnv['AUTHORITY']);
+        $this->sendMessage($query = "{$update->message->from->first_name} {$update->message->from->last_name} \t(  @{$update->message->from->username} ) just Queried!\n (Query = '$query')", getenv('AUTHORITY'));
         echo "$query\n";
     }
     public function processQueryMessage($query)
@@ -61,7 +57,7 @@ class Bot
         if (str_starts_with($query, '/start')) {
             $message = "Hi" . PHP_EOL . "you can find the lyrics to your song by typing in the name of the song.(along with artist(s) name to get more accurate result)" . PHP_EOL . "The bot will search genius for the song and if any match(es) are found, the closest search result will be returned to you" . PHP_EOL;
         } else {
-            $song = Genius::scrapeSong($query, $this->dotEnv);
+            $song = Genius::scrapeSong($query);
             $message = ($song ? $this->fetchLyrics($song) : "No results, try again");
         }
         return $message;
