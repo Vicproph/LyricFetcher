@@ -11,7 +11,7 @@ use Dotenv\Dotenv;
 
 class Bot
 {
-    const PROXY = '127.0.0.1:61933'; // Won't be needed if there's no block on any of the APIs needed
+    const PROXY = ''; // Won't be needed if there's no block on any of the APIs needed
 
 
     public function sendMessage($message, $chatId) // returns true on success, false on failure
