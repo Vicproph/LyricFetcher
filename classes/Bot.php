@@ -2,30 +2,38 @@
 
 namespace Classes;
 
-use Goutte\Client;
+use Classes\Env;
+use Goutte\Client as GoutteClient;
+use GuzzleHttp\Client;
 
 use Symfony\Component\HttpClient\HttpClient;
+use Dotenv\Dotenv;
 
 class Bot
 {
-    const PROXY = ''; // Won't be needed if there's no block on any of the APIs needed
+    public $dotEnv;
+    const PROXY = '127.0.0.1:61933'; // Won't be needed if there's no block on any of the APIs needed
 
+    public function __construct($dotEnv)
+    {
+        $this->dotEnv = $dotEnv;
+    }
     public function sendMessage($message, $chatId) // returns true on success, false on failure
     {
         $messages = $this->sectionLyrics($message);
         foreach ($messages as $message) {
-            $url = "https://api.telegram.org/bot" . getenv('BOT_KEY') . "/sendMessage";
+            $url = "https://api.telegram.org/bot" . $this->dotEnv['BOT_KEY'] . "/sendMessage?text=$message&chat_id=$chatId";
+            $client = new Client();
+            echo "message : " . $message . "\n";
+            $response = $client->get($url, [
 
-            $curlHandle = curl_init($url);
+                'headers' => [
+                    'Content-Type' => 'application/json'
+                ],
+                'proxy' => self::PROXY
+            ]);
 
-            curl_setopt($curlHandle, CURLOPT_POST, true);
-            curl_setopt($curlHandle, CURLOPT_POSTFIELDS, ['text' => $message, 'chat_id' => $chatId]);
-            curl_setopt($curlHandle, CURLOPT_HTTPHEADER, ['Content-Type' => 'application/json']);
-            curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, true);
-
-            $jsonResult = curl_exec($curlHandle);
-            curl_close($curlHandle);
-            $result = json_decode($jsonResult);
+            $result = json_decode($response->getBody()->getContents());
         }
         return $result->ok;
     }
@@ -42,7 +50,8 @@ class Bot
     private function informAuthority($update)
     {
         $query = $update->message->text;
-        $this->sendMessage("{$update->message->from->first_name} {$update->message->from->last_name} \t(  {$update->message->from->username} ) just Queried!\n (Message = '$query')", getenv('AUTHORITY'));
+        $this->sendMessage($query = "{$update->message->from->first_name} {$update->message->from->last_name} \t(  @{$update->message->from->username} ) just Queried!\n (Query = '$query')", $this->dotEnv['AUTHORITY']);
+        echo "$query\n";
     }
     public function processQueryMessage($query)
     {
@@ -52,7 +61,7 @@ class Bot
         if (str_starts_with($query, '/start')) {
             $message = "Hi" . PHP_EOL . "you can find the lyrics to your song by typing in the name of the song.(along with artist(s) name to get more accurate result)" . PHP_EOL . "The bot will search genius for the song and if any match(es) are found, the closest search result will be returned to you" . PHP_EOL;
         } else {
-            $song = Genius::scrapeSong($query);
+            $song = Genius::scrapeSong($query, $this->dotEnv);
             $message = ($song ? $this->fetchLyrics($song) : "No results, try again");
         }
         return $message;
@@ -62,7 +71,7 @@ class Bot
         $title = $song->full_title;
 
         do { // could fail retrieving it
-            $client = new Client(HttpClient::create(['proxy' => self::PROXY]));
+            $client = new GoutteClient(HttpClient::create(['proxy' => self::PROXY]));
             $request = $client->request('GET', $song->url);
             $lyrics = ($request->filter('.lyrics')->each(function ($node) {
                 $text = $node->html();
