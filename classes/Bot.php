@@ -13,16 +13,18 @@ class Bot
 {
     const PROXY = ''; // Won't be needed if there's no block on any of the APIs needed
 
-
     public function sendMessage($message, $chatId) // returns true on success, false on failure
     {
+
         $messages = $this->sectionLyrics($message);
         foreach ($messages as $message) {
-            $url = "https://api.telegram.org/bot" . getenv('BOT_KEY') . "/sendMessage?text=$message&chat_id=$chatId";
+            $url = "https://api.telegram.org/bot" . getenv('BOT_KEY') . "/sendMessage";
             $client = new Client();
-            echo "message : " . $message . "\n";
-            $response = $client->get($url, [
-
+            $response = $client->post($url, [
+                'json' => [
+                    'chat_id' => $chatId,
+                    'text' => $message
+                ],
                 'headers' => [
                     'Content-Type' => 'application/json'
                 ],
