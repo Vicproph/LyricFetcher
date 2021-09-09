@@ -23,7 +23,7 @@ class Bot
             $response = $client->post($url, [
                 'json' => [
                     'chat_id' => $chatId,
-                    'text' => $message
+                    'text' => mb_convert_encoding($message, 'UTF-8', 'UTF-8')
                 ],
                 'headers' => [
                     'Content-Type' => 'application/json'
