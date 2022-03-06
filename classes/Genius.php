@@ -2,16 +2,14 @@
 
 namespace Classes;
 
-use Dotenv\Dotenv;
-use Classes\Env;
-
 class Genius
 {
     public $song;
 
     public static function scrapeSong($searchQuery) // returns the song(s) returned from the search list from Genius
     {
-        $url = "https://genius.p.rapidapi.com/search?q=" . urlencode($searchQuery);
+
+        $url = "https://genius.p.rapidapi.com/search?q=" . urldecode($searchQuery);
         $curlHandle = curl_init($url);
         curl_setopt_array($curlHandle, [
             CURLOPT_RETURNTRANSFER => true,

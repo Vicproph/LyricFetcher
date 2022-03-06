@@ -2,12 +2,9 @@
 
 namespace Classes;
 
-use Classes\Env;
 use Goutte\Client as GoutteClient;
 use GuzzleHttp\Client;
-
 use Symfony\Component\HttpClient\HttpClient;
-use Dotenv\Dotenv;
 
 class Bot
 {
