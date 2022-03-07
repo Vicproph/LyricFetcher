@@ -64,18 +64,16 @@ class Bot
     public function fetchLyrics($song)
     {
         $title = $song->full_title;
-
         do { // could fail retrieving it
             $client = new GoutteClient(HttpClient::create(['proxy' => self::PROXY]));
             $request = $client->request('GET', $song->url);
-            $lyrics = ($request->filter('.lyrics')->each(function ($node) {
+            $lyrics = ($request->filter('#lyrics-root [data-lyrics-container=true]')->each(function ($node) {
                 $text = $node->html();
                 return $text;
             }));
         } while (empty($lyrics));
-
-        $lyrics = $lyrics[0];
-        $lyrics = $title . "<br>" . $lyrics;
+        $lyrics = implode($lyrics);
+        $lyrics = $title . "<br><br>" . $lyrics;
         $lyrics = (new \Html2Text\Html2Text($lyrics))->getText();
         $lyrics = $this->omitLinkNotes($lyrics);
         return $lyrics; // returns the HTML document of the lyrics
