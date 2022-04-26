@@ -22,6 +22,7 @@ class Genius
         ]);
         $result = $response->getBody()->getContents();
         $result = json_decode($result);
+        var_dump($result);
         $songs = [];
         foreach ($result->response->hits as $i => $hit) {
             $songs[$i]['full_title'] = $hit->result->full_title;
