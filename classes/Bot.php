@@ -58,9 +58,7 @@ class Bot
         if (str_starts_with($query, '/start')) {
             $message = "Hi" . PHP_EOL . "you can find the lyrics to your song by typing in the name of the song.(along with artist(s) name to get more accurate result)" . PHP_EOL . "The bot will search genius for the song and if any match(es) are found, the closest search result will be returned to you" . PHP_EOL;
         } else if (preg_match('/^[0-9]\./', $query)) { // selected a song
-            $partitionedQuery = explode('.', $query, 2);
-            $index = $partitionedQuery[0];
-            $query = ltrim($partitionedQuery[1]);
+            $query = self::fixateQuery($query);
             $song = Genius::scrapeSong($query, 0);
             $message = ($song != null) ? $this->fetchLyrics($song) : "No results, try again";
         } else {
@@ -134,5 +132,21 @@ class Bot
             $splitLyrics[] = substr($lyrics, $i * 4096, (strlen($lyrics) - $i * 4096) >= 4096 ? 4096 : (strlen($lyrics) - $i * 4096));
         }
         return $splitLyrics;
+    }
+    static public function fixateQuery($query)
+    {
+
+        $partitionedQuery = explode('.', $query, 2);
+        $partitionedQuery[1] = ltrim($partitionedQuery[1]);
+        $byPartitions = explode('By', $partitionedQuery[1]);
+        $output = '';
+        $i = 0;
+        for (; $i < count($byPartitions); $i++) {
+            if ($i < count($byPartitions) - 2)
+                $output .= ($byPartitions[$i] . ("By"));
+            else
+                $output .=  ' '.trim($byPartitions[$i]);
+        }
+        return $output;
     }
 }
