@@ -4,6 +4,7 @@ namespace Classes;
 
 use Goutte\Client as GoutteClient;
 use GuzzleHttp\Client;
+use phpDocumentor\Reflection\PseudoTypes\LowercaseString;
 use Symfony\Component\HttpClient\CurlHttpClient;
 
 class Bot
@@ -144,8 +145,8 @@ class Bot
             if ($i < count($byPartitions) - 2)
                 $output .= ($byPartitions[$i] . ("By"));
             else
-                $output .=  ' '.trim($byPartitions[$i]);
+                $output .=  ' ' . trim($byPartitions[$i]);
         }
-        return trim($output);
+        return trim(strtolower($output));
     }
 }
