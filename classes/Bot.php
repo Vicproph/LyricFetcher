@@ -98,7 +98,7 @@ class Bot
     {
         $i = 0;
         $songTitles = array_map(function ($song) use (&$i) {
-            return  [['text' => ++$i . '. ' . $song['full_title']]];
+            return  [['text' => ++$i . '.' . $song['full_title']]];
         }, $songs);
         $textBeforeButtons = "Choose your result.";
         $client = new Client();
@@ -146,6 +146,6 @@ class Bot
             else
                 $output .=  ' '.trim($byPartitions[$i]);
         }
-        return $output;
+        return trim($output);
     }
 }
