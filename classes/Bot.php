@@ -116,7 +116,6 @@ class Bot
             'verify' => Test::DEVELOPMENT_MODE ? false : true
         ]);
         $jsonResult = json_decode($response->getBody()->getContents());
-        var_dump($jsonResult);
     }
 
     private function omitLinkNotes($string) // don't look at this function, it just omits the links from the lyrics
