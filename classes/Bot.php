@@ -103,7 +103,7 @@ class Bot
             return  [['text' => ++$i . '. ' . $song['full_title']]];
         }, $songs);
         $textBeforeButtons = "Choose your result.";
-        $client = new Client(Test::DEVELOPMENT_MODE ? Test::GUZZLEHTTP_CLIENT_SSL_VERIFY : null);
+        $client = new Client();
         $response = $client->post("https://api.telegram.org/bot" . getenv("BOT_KEY") . "/sendMessage", [
             'proxy' => Bot::PROXY,
             'json' => [
@@ -114,7 +114,8 @@ class Bot
                     'resize_keyboard' => true,
                     'one_time_keyboard' => true
                 ],
-            ]
+            ],
+            'verify' => Test::DEVELOPMENT_MODE ? false : true
         ]);
         $jsonResult = json_decode($response->getBody()->getContents());
         var_dump($jsonResult);

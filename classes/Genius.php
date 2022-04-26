@@ -12,7 +12,7 @@ class Genius
     public static function scrapeSong($searchQuery, $index = null) // returns the song(s) returned from the search list from Genius
     {
         $url = "https://genius.p.rapidapi.com/search?q=" . urlencode($searchQuery);
-        $client = new Client(Test::DEVELOPMENT_MODE ? Test::GUZZLEHTTP_CLIENT_SSL_VERIFY : null);
+        $client = new Client(Test::DEVELOPMENT_MODE ? Test::GUZZLEHTTP_CLIENT_SSL_VERIFY : []);
         $response = $client->get($url, [
             'proxy' => Bot::PROXY,
             'headers' => [
