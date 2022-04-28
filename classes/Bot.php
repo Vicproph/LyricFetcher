@@ -43,7 +43,7 @@ class Bot
         } else if (is_string($reply)) {
             $this->sendMessage($reply, $from);
         }
-        // $this->informAuthority($update);
+        $this->informAuthority($update);
     }
     private function informAuthority($update)
     {
