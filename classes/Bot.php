@@ -33,7 +33,7 @@ class Bot
 
     public function processQuery($update)
     {
-        $query = $update->message->text;
+        $query = html_entity_decode($update->message->text);
         $from =  $update->message->from->id;
         $reply = $this->processQueryMessage($query);
         // the reply (lyrics) could be more than 4096 UTF characters (Telegram's limit for a message) so it has to be chunked up to multiple parts and be sent sequentially
@@ -54,13 +54,12 @@ class Bot
     public function processQueryMessage($query)
     {
         // the query is either a '/start' command which makes the bot introduce itself or it's a search query for a song
-        $query = htmlspecialchars(strip_tags($query));
+        $query = strip_tags($query);
         $message = '';
         if (str_starts_with($query, '/start')) {
             $message = "Hi" . PHP_EOL . "you can find the lyrics to your song by typing in the name of the song.(along with artist(s) name to get more accurate result)" . PHP_EOL . "The bot will search genius for the song and if any match(es) are found, the closest search result will be returned to you" . PHP_EOL;
         } else if (preg_match('/^[0-9]\./', $query)) { // selected a song
             $query = self::fixateQuery($query);
-
             $song = $this->scrapeSong($query, 0);
             $message = ($song != null) ? $this->fetchLyrics($song) : "No results, try again";
         } else {
@@ -81,7 +80,7 @@ class Bot
                 'verify_host' => Test::DEVELOPMENT_MODE ? false : true
             ]);
             $client = new GoutteClient($httpClient);
-            $request = $client->request('GET', $song['url'],);
+            $request = $client->request('GET', $song['url']);
             $lyrics = ($request->filter('#lyrics-root [data-lyrics-container=true]')->each(function ($node) {
                 $text = $node->html();
                 return $text;
@@ -110,7 +109,6 @@ class Bot
         ]);
         $result = $response->getBody()->getContents();
         $result = json_decode($result);
-        var_dump($result);
         $songs = [];
         foreach ($result->response->hits as $i => $hit) {
             $songs[$i]['full_title'] = $hit->result->full_title;
