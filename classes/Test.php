@@ -7,7 +7,6 @@ use GuzzleHttp\Client;
 class Test
 {
     const DEVELOPMENT_MODE = false;
-    const GUZZLEHTTP_CLIENT_SSL_VERIFY = ['verify' => false];
 
     static public function getUpdates()
     {

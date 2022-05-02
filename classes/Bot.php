@@ -61,10 +61,10 @@ class Bot
         } else if (preg_match('/^[0-9]\./', $query)) { // selected a song
             $query = self::fixateQuery($query);
 
-            $song = Genius::scrapeSong($query, 0);
+            $song = $this->scrapeSong($query, 0);
             $message = ($song != null) ? $this->fetchLyrics($song) : "No results, try again";
         } else {
-            $songs = Genius::scrapeSong($query);
+            $songs = $this->scrapeSong($query);
             $message = ($songs ? $songs : "No results, try again");
         }
         return $message;
@@ -95,7 +95,31 @@ class Bot
         $lyrics = $this->omitLinkNotes($lyrics);
         return $lyrics; // returns the HTML document of the lyrics
     }
-
+    public static function scrapeSong($searchQuery, $index = null) // returns the song(s) returned from the search list from Genius
+    {
+        $url = "https://genius.p.rapidapi.com/search?q=" . urlencode($searchQuery);
+        $client = new Client([
+            'verify' => Test::DEVELOPMENT_MODE ? false : true
+        ]);
+        $response = $client->get($url, [
+            'proxy' => Bot::PROXY,
+            'headers' => [
+                'X-RapidAPI-Host' => 'genius.p.rapidapi.com',
+                'X-RapidAPI-Key' => getenv('RAPID_API_KEY')
+            ]
+        ]);
+        $result = $response->getBody()->getContents();
+        $result = json_decode($result);
+        var_dump($result);
+        $songs = [];
+        foreach ($result->response->hits as $i => $hit) {
+            $songs[$i]['full_title'] = $hit->result->full_title;
+            $songs[$i]['url'] = $hit->result->url;
+        }
+        if (empty($songs)) // could have no results
+            return null;
+        return $index === null ? $songs : $songs[$index];
+    }
     public function sendMenuButtons($from, $songs)
     {
         $i = 0;
